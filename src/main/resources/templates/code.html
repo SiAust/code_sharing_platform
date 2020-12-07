@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
+
+    <!-- Highlights the code snippet with syntax formatting -->
+    <link rel="stylesheet"
+          href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <title>Code</title>
 </head>
 <body>
 <div class="main-wrapper">
-    <table>
-        <tr th:each="snippet : ${snippets}">
-            <span id="load_date" th:text="${snippet.date}"></span>
-            <pre id="code_snippet" th:text="${snippet.code}"></pre>
-        </tr>
-    </table>
+    <p th:if="${error}">No code Snippet found with that ID</p>
+
+    <div th:if="${snippet != null}"> <!-- Only displays the child elements when snippet is not null -->
+        <span id="load_date" th:text="${snippet.date}"></span>
+        <pre><code id="code_snippet" th:text="${snippet.code}"></code></pre>
+    </div>
+
 </div>
 </body>
 </html>
