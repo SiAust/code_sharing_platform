@@ -19,6 +19,10 @@
 
     <div th:if="${snippet != null}"> <!-- Only displays the child elements when snippet is not null -->
         <span id="load_date" th:text="${snippet.date}"></span>
+        <div th:if="${secret}">
+            <p><u><span th:text="${snippet.views}">n</span></u> more views allowed</p>
+            <p>The code will be available for <u><span th:text="${snippet.time}">x</span></u> seconds</p>
+        </div>
         <pre><code id="code_snippet" th:text="${snippet.code}"></code></pre>
     </div>
 

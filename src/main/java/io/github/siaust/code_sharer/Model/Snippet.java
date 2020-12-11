@@ -3,23 +3,30 @@ package io.github.siaust.code_sharer.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Entity
 public class Snippet implements Comparable<Snippet> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Long id;
+    private final UUID id = UUID.randomUUID(); // Universally Unique ID for each Snippet
 
-    private String code;
+    private String code; // The actual code
 
-    private final String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    private final LocalDateTime date = LocalDateTime.now();
+    @JsonIgnore
+    private LocalDateTime lastTimeCheck;
+
+    private long time; // time the code snippet is available to view. Deleted when expired.
+
+    private long views; // number of views allowed. Deleted when < 1.
+
+    @JsonIgnore
+    private boolean secret;
 
     // for Jackson
     public Snippet() {}
@@ -28,7 +35,7 @@ public class Snippet implements Comparable<Snippet> {
         this.code = code;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -41,7 +48,43 @@ public class Snippet implements Comparable<Snippet> {
     }
 
     public String getDate() {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public LocalDateTime getLocalDateTime() {
         return date;
+    }
+
+    public LocalDateTime getLastTimeCheck() {
+        return lastTimeCheck;
+    }
+
+    public void setLastTimeCheck(LocalDateTime lastCheck) {
+        this.lastTimeCheck = lastCheck;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public long getViews() {
+        return views;
+    }
+
+    public void setViews(long views) {
+        this.views = views;
+    }
+
+    public boolean isSecret() {
+        return secret;
+    }
+
+    public void setSecret(boolean secret) {
+        this.secret = secret;
     }
 
     @Override

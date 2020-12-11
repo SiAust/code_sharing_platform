@@ -16,6 +16,18 @@ html, body {
     padding: 10px;
 }
 
+.restriction-div > * {
+    padding: 5px 0;
+}
+
+.restriction-div > input {
+    padding-left: 5px;
+}
+
+button {
+    padding: 5px;
+}
+
 #load_date {
     color: green;
 }

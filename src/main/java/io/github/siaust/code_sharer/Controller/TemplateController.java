@@ -1,21 +1,26 @@
 package io.github.siaust.code_sharer.Controller;
 
-import io.github.siaust.code_sharer.Repository.SnippetRepository;
+import io.github.siaust.code_sharer.Model.Snippet;
+import io.github.siaust.code_sharer.Service.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.UUID;
+
 @Controller
 public class TemplateController {
     @Autowired
-    SnippetRepository snippetRepository;
+    SnippetService snippetService;
 
-    @GetMapping("/code/{n}")
-    public String getCode(@PathVariable long n, Model model) {
-        if (snippetRepository.findById(n).isPresent()) {
-            model.addAttribute("snippet", snippetRepository.findById(n).get());
+    @GetMapping("/code/{uuid}")
+    public String getCode(@PathVariable UUID uuid, Model model) {
+        Snippet snippet;
+        if ((snippet = snippetService.getSnippet(uuid)) != null) {
+            model.addAttribute("snippet", snippet);
+            model.addAttribute("secret", snippet.isSecret());
         } else {
             model.addAttribute("error", true);
         }
@@ -24,7 +29,7 @@ public class TemplateController {
 
     @GetMapping("/code/latest")
     public String getCodeLatest(Model model) {
-        model.addAttribute("snippets", snippetRepository.findTop10ByOrderByIdDesc());
+        model.addAttribute("snippets", snippetService.getLatest());
         return "latest";
     }
 
