@@ -1,7 +1,10 @@
 package io.github.siaust.code_sharer.Controller;
 
+import io.github.siaust.code_sharer.Error.ItemNotFoundException;
 import io.github.siaust.code_sharer.Model.Snippet;
 import io.github.siaust.code_sharer.Service.SnippetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,8 @@ import java.util.UUID;
 public class TemplateController {
     @Autowired
     SnippetService snippetService;
+
+    private static final Logger log = LoggerFactory.getLogger(TemplateController.class);
 
     @GetMapping("/code/{uuid}")
     public String getCode(@PathVariable UUID uuid, Model model) {

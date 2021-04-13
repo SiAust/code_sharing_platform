@@ -18,10 +18,10 @@ public class SnippetService {
     @Autowired
     SnippetRepository snippetRepository;
 
-    public Snippet getSnippet(UUID uuid) throws NoSuchElementException {
+    public Snippet getSnippet(UUID uuid) {
         Snippet snippet = snippetRepository.findById(uuid).orElse(null);
-
-        return snippet == null ? null : updateSnippet(snippet);
+        /* If secret snippet, update it, otherwise return snippet */
+        return snippet == null ? null : snippet.isSecret() ? updateSnippet(snippet) : snippet;
     }
 
     public List<Snippet> getLatest() {
@@ -50,17 +50,15 @@ public class SnippetService {
             snippet.setTime(snippet.getTime()
             - (now.toEpochSecond(ZoneOffset.UTC)
             - snippet.getLocalDateTime().toEpochSecond(ZoneOffset.UTC)));
-            snippet.setLastTimeCheck(now);
         } else {
             snippet.setTime(snippet.getTime()
             - (now.toEpochSecond(ZoneOffset.UTC)
             - snippet.getLastTimeCheck().toEpochSecond(ZoneOffset.UTC)));
-            snippet.setLastTimeCheck(now);
         }
+        snippet.setLastTimeCheck(now);
 
         /* If snippet is secret and time or views expired, delete from DB */
-        if (snippet.getTime() < 1 && snippet.isSecret()
-                || snippet.getViews() < 0 && snippet.isSecret()) {
+        if (snippet.getTime() < 1 || snippet.getViews() < 0) {
             snippetRepository.delete(snippet);
             return null;
         }

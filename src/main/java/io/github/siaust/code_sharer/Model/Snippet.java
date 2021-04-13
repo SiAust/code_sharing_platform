@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,7 @@ public class Snippet implements Comparable<Snippet> {
 
     private final LocalDateTime date = LocalDateTime.now();
     @JsonIgnore
-    private LocalDateTime lastTimeCheck;
+    private LocalDateTime lastTimeCheck; // helps in decrementing the time field
 
     private long time; // time the code snippet is available to view. Deleted when expired.
 
@@ -51,6 +52,7 @@ public class Snippet implements Comparable<Snippet> {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+    @JsonIgnore
     public LocalDateTime getLocalDateTime() {
         return date;
     }
@@ -89,7 +91,8 @@ public class Snippet implements Comparable<Snippet> {
 
     @Override
     public String toString() {
-        return "***\ncode: " + code + "\ndate: " + date;
+        return "\ncode: " + code + "\ndate: " + date.truncatedTo(ChronoUnit.SECONDS)
+                + "\nis secret: " + isSecret();
     }
 
     @Override

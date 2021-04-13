@@ -1,5 +1,6 @@
 package io.github.siaust.code_sharer.Controller;
 
+import io.github.siaust.code_sharer.Error.ItemNotFoundException;
 import io.github.siaust.code_sharer.Model.Snippet;
 import io.github.siaust.code_sharer.Repository.SnippetRepository;
 import io.github.siaust.code_sharer.Service.SnippetService;
@@ -21,20 +22,24 @@ public class ApiController {
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
 
     @GetMapping("/api/code/{uuid}")
-    public Snippet getCodeJSON(@PathVariable UUID uuid) {
-        log.info("GET Request for Snippet ID= {} from DB", uuid);
-        return snippetService.getSnippet(uuid); // todo handle exceptions
+    public Snippet getSnippetByUUID(@PathVariable UUID uuid) {
+        log.info("API GET for Snippet UUID= {} from DB", uuid);
+        Snippet snippet =  snippetService.getSnippet(uuid);
+        if (snippet == null) {
+            throw new ItemNotFoundException("Snippet not found");
+        }
+        return snippetService.getSnippet(uuid);
     }
 
     @GetMapping("/api/code/latest")
-    public List<Snippet> getCodeJSON() {
+    public List<Snippet> getLatestSnippets() {
         log.info("API GET for latest Snippets from DB");
         return snippetService.getLatest();
     }
 
     @PostMapping("/api/code/new")
     public Map<String, String> postNewSnippet(@RequestBody Snippet snippet) {
-        log.info("API POST new Snippet to DB");
+        log.info("API POST new Snippet to DB. Snippet= {}", snippet);
         return  snippetService.saveSnippet(snippet);
     }
 
