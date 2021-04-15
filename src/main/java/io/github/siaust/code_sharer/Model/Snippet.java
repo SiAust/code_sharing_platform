@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -91,8 +90,12 @@ public class Snippet implements Comparable<Snippet> {
 
     @Override
     public String toString() {
-        return "\ncode: " + code + "\ndate: " + date.truncatedTo(ChronoUnit.SECONDS)
-                + "\nis secret: " + isSecret();
+        return "\n***\ncode: " + code
+                + "\ndate: " + getDate()
+                + "\nuuid: " + id
+                + "\nviews: " + views
+                + "\ntime: " + time
+                + "\n***";
     }
 
     @Override

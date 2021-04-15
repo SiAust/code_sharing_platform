@@ -28,7 +28,7 @@ public class ApiController {
         if (snippet == null) {
             throw new ItemNotFoundException("Snippet not found");
         }
-        return snippetService.getSnippet(uuid);
+        return snippet;
     }
 
     @GetMapping("/api/code/latest")

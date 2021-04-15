@@ -1,6 +1,7 @@
 package io.github.siaust.code_sharer.Controller;
 
 import io.github.siaust.code_sharer.Error.ItemNotFoundException;
+import io.github.siaust.code_sharer.Error.SnippetNotFound;
 import io.github.siaust.code_sharer.Model.Snippet;
 import io.github.siaust.code_sharer.Service.SnippetService;
 import org.slf4j.Logger;
@@ -22,24 +23,28 @@ public class TemplateController {
 
     @GetMapping("/code/{uuid}")
     public String getCode(@PathVariable UUID uuid, Model model) {
+        log.info("GET code for Snippet UUID {}", uuid);
         Snippet snippet;
         if ((snippet = snippetService.getSnippet(uuid)) != null) {
             model.addAttribute("snippet", snippet);
             model.addAttribute("secret", snippet.isSecret());
         } else {
-            model.addAttribute("error", true);
+            throw new SnippetNotFound();
         }
+        model.addAttribute("error", false);
         return "code";
     }
 
     @GetMapping("/code/latest")
     public String getCodeLatest(Model model) {
+        log.info("GET latest snippets");
         model.addAttribute("snippets", snippetService.getLatest());
         return "latest";
     }
 
     @GetMapping("/code/new")
-    public String getCodeNew(Model model) {
+    public String getCodeNew() {
+        log.info("GET new template");
         return "new";
     }
 
